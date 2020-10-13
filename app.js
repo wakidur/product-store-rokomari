@@ -1,9 +1,16 @@
+/* eslint-disable no-useless-catch */
+/* eslint-disable node/no-unsupported-features/es-syntax */
 const express = require('express');
 const bodyParser = require('body-parser');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
 const dotenv = require('dotenv').config({ path: '.env' });
+const Joi = require('joi');
+
 const connectDB = require('./config/db-config');
+const MongooseQuery = require('./utilities/mongoose-query');
+// Schema
+const Product = require('./models/product/productSchema');
 
 // Instantiate Express app
 const app = express();
@@ -30,8 +37,6 @@ app.use(
         image: String!,
         price: Float!,
         category: String!,
-        createdAt: String!,
-        updateAt: String!
     }
 
     input EventInput {
@@ -41,8 +46,6 @@ app.use(
         image: String!,
         price: Float!,
         category: String!,
-        createdAt: String!,
-        updateAt: String!
     }
 
     type RootQuery {
@@ -57,23 +60,47 @@ app.use(
     }
     `),
     rootValue: {
-      events: () => {
-        return events;
+      events: async () => {
+        try {
+          const products = await MongooseQuery.find(Product, {});
+          return products.map((event) => {
+            return { ...event._doc, _id: event.id };
+          });
+        } catch (error) {
+          throw error;
+        }
+
+        // return events;
       },
-      createEvent: (args) => {
-        const event = {
-          _id: Math.random().toString(),
-          name: args.eventInput.name,
-          brandName: args.eventInput.brandName,
-          details: args.eventInput.details,
-          image: args.eventInput.image,
-          price: +args.eventInput.price,
-          category: args.eventInput.category,
-          createdAt: args.eventInput.createdAt,
-          updateAt: args.eventInput.updateAt,
-        };
-        events.push(event);
-        return event;
+      createEvent: async (args) => {
+        // eslint-disable-next-line no-useless-catch
+        try {
+          // Create JOI validate object
+          const ProductSchema = Joi.object({
+            name: Joi.string().min(1).max(50).required(),
+            brandName: Joi.string().min(1).max(100).required(),
+            details: Joi.string().min(1).max(500).required(),
+            image: Joi.string().required(),
+            price: Joi.number().required(),
+            category: Joi.string().required(),
+          });
+
+          // Validate request body by the JOI Schema
+          const value = await ProductSchema.validateAsync(args.eventInput);
+
+          // Create perticular Product create
+          const productCreate = await MongooseQuery.create(Product, value);
+          console.log(productCreate);
+
+          return {
+            // eslint-disable-next-line node/no-unsupported-features/es-syntax
+            ...productCreate._doc,
+            _id: productCreate._doc._id.toString(),
+          };
+        } catch (error) {
+          console.log(error);
+          throw error;
+        }
       },
     },
     graphiql: true,
