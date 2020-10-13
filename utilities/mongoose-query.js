@@ -7,7 +7,26 @@ function find(model, option) {
   return new Promise((resolve, reject) => {
     model
       .find(option)
-      .exec()
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+/**
+ * Get
+ * @param {*} model
+ * @param {*} option
+ * @param {*} populate
+ */
+
+function findWithSinglePopulate(model, option, populateName) {
+  return new Promise((resolve, reject) => {
+    model
+      .find(option)
+      .populate(populateName)
       .then((result) => {
         resolve(result);
       })
@@ -146,6 +165,7 @@ function findByIdAndUpdate(model, id, bodyObj, option) {
 
 module.exports = {
   find,
+  findWithSinglePopulate,
   countDocuments,
   findByIdAndPopulate,
   findById,

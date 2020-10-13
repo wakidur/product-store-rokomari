@@ -24,10 +24,14 @@ const productSchema = new Schema(
       type: Number,
       required: [true, "price can't be empty"],
     },
-    category: {
-      type: String,
-      required: [true, "category can't be empty"],
-    },
+    productCategory: [
+      // One-to-Many relationships with product and cateroty
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'ProductCategory',
+        require: false,
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now(),
