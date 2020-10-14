@@ -29,6 +29,14 @@ input ProductCategoryInput {
     name: String!
 }
 
+input UpdateProductInput {
+    name: String!,
+    brandName: String!,
+    details: String!,
+    image: String!,
+    price: Float!,
+  } 
+
 type Query {
     products: [Product!]!,
     productsMerge: [Product!]!,
@@ -37,6 +45,8 @@ type Query {
 
 type Mutation {
     createProduct(productInput: ProductInput): Product!,
+    updateProduct(_id: String!, updateProductInput: UpdateProductInput!): Product!
+    deleteProduct(_id: String!): Product!
     createProductCategory(productCategoryInput: ProductCategoryInput): ProductCategory!,
     updateProductCategory(_id: String!, name: String!): ProductCategory!
     deleteProductCategory(_id: String!): ProductCategory!

@@ -25,6 +25,7 @@ const productMergeForProductCategory = async (productCategoryID) => {
   }
 };
 module.exports = {
+  // Product  CRUD
   // Using mongoose Populate
   products: async () => {
     try {
@@ -66,17 +67,6 @@ module.exports = {
       throw error;
     }
   },
-  // Using mongoose Populate
-  productCategories: async () => {
-    try {
-      const products = await MongooseQuery.find(ProductCategory, {});
-      return products.map((productcategory) => {
-        return { ...productcategory._doc, _id: productcategory.id };
-      });
-    } catch (error) {
-      throw error;
-    }
-  },
   createProduct: async (args) => {
     // eslint-disable-next-line no-useless-catch
     try {
@@ -104,6 +94,39 @@ module.exports = {
       };
     } catch (error) {
       console.log(error);
+      throw error;
+    }
+  },
+  updateProduct: async (args) => {
+    const productUpdate = await MongooseQuery.findByIdAndUpdate(
+      Product,
+      args._id,
+      { $set: { ...args.updateProductInput } },
+      { new: true }
+    );
+    return {
+      // eslint-disable-next-line node/no-unsupported-features/es-syntax
+      ...productUpdate._doc,
+      _id: productUpdate._doc._id.toString(),
+    };
+  },
+  deleteProduct: async (args) => {
+    const productDelete = await MongooseQuery.findByIdAndDelete(
+      Product,
+      args._id
+    );
+    return {
+      ...productDelete._doc,
+    };
+  },
+  // Product Category CRUD
+  productCategories: async () => {
+    try {
+      const products = await MongooseQuery.find(ProductCategory, {});
+      return products.map((productcategory) => {
+        return { ...productcategory._doc, _id: productcategory.id };
+      });
+    } catch (error) {
       throw error;
     }
   },
@@ -157,7 +180,6 @@ module.exports = {
         // eslint-disable-next-line node/no-unsupported-features/es-syntax
         ...productCategoryUpdate._doc,
         _id: productCategoryUpdate._doc._id.toString(),
-        name: productCategoryUpdate._doc.name,
       };
     } catch (error) {
       throw error;
