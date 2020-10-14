@@ -1,6 +1,5 @@
 # Product Store Rokomari
 
-=======================
 Create a simple project of product store using Nodejs, Express.js and GraphQL with MVC pattern.
 
 ### Query and Mutation
