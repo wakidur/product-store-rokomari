@@ -163,4 +163,13 @@ module.exports = {
       throw error;
     }
   },
+  deleteProductCategory: async (args) => {
+    const productCategoryDelete = await MongooseQuery.findByIdAndDelete(
+      ProductCategory,
+      args._id
+    );
+    return {
+      ...productCategoryDelete._doc,
+    };
+  },
 };

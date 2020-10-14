@@ -135,6 +135,23 @@ function remove(model, id) {
       });
   });
 }
+/**
+ * Dynamic find One And Delete operation
+ * @param {*} model
+ * @param {*} id
+ */
+function findByIdAndDelete(model, _id) {
+  return new Promise((resolve, reject) => {
+    model
+      .findByIdAndDelete(_id)
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
 
 /**
  * Find by id and update
@@ -170,6 +187,7 @@ module.exports = {
   findByIdAndPopulate,
   findById,
   findByIdAndUpdate,
+  findByIdAndDelete,
   create,
   remove,
 };
