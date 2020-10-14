@@ -8,7 +8,7 @@ type Product {
     details: String!,
     image: String!,
     price: Float!,
-    productCategory: [Object!],
+    productCategory: [ProductCategory!]
 }
 
 type ProductCategory {
@@ -29,17 +29,21 @@ input ProductCategoryInput {
     name: String!
 }
 
-type RootQuery {
+type Query {
     products: [Product!]!,
+    productsMerge: [Product!]!,
     productCategories: [ProductCategory!]!
 }
-type RootMutation {
-    createProduct(productInput: ProductInput): Product,
-    createProductCategory(productCategoryInput: ProductCategoryInput): ProductCategory
+
+type Mutation {
+    createProduct(productInput: ProductInput): Product!,
+    createProductCategory(productCategoryInput: ProductCategoryInput): ProductCategory!,
+    updateProductCategory(_id: String!, name: String!): ProductCategory!
+    deleteProductCategory(_id: String!): ProductCategory!
 }
 
 schema {
-    query: RootQuery
-    mutation: RootMutation
+    query: Query
+    mutation: Mutation
 }
 `);

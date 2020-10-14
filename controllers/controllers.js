@@ -6,7 +6,26 @@ const Product = require('../models/product/productSchema');
 const ProductCategory = require('../models/product-category/productCategorySchema');
 const MongooseQuery = require('../utilities/mongoose-query');
 
+// merge
+const productMergeForProductCategory = async (productCategoryID) => {
+  try {
+    const productCategories = await MongooseQuery.find(ProductCategory, {
+      _id: { $in: productCategoryID },
+    });
+    productCategories.map((productCategory) => {
+      return {
+        ...productCategory._doc,
+        _id: productCategory.id,
+        name: productCategory.name,
+      };
+    });
+    return productCategories;
+  } catch (err) {
+    throw err;
+  }
+};
 module.exports = {
+  // Using mongoose Populate
   products: async () => {
     try {
       const products = await MongooseQuery.findWithSinglePopulate(
@@ -30,6 +49,24 @@ module.exports = {
       throw error;
     }
   },
+  productsMerge: async () => {
+    try {
+      const products = await MongooseQuery.find(Product, {});
+      return products.map((product) => {
+        return {
+          ...product._doc,
+          _id: product.id,
+          productCategory: productMergeForProductCategory.bind(
+            this,
+            product._doc.productCategory
+          ),
+        };
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  // Using mongoose Populate
   productCategories: async () => {
     try {
       const products = await MongooseQuery.find(ProductCategory, {});
@@ -105,6 +142,24 @@ module.exports = {
       };
     } catch (error) {
       console.log(error);
+      throw error;
+    }
+  },
+  updateProductCategory: async (args) => {
+    try {
+      const productCategoryUpdate = await MongooseQuery.findByIdAndUpdate(
+        ProductCategory,
+        args._id,
+        { $set: { ...args } },
+        { new: true }
+      );
+      return {
+        // eslint-disable-next-line node/no-unsupported-features/es-syntax
+        ...productCategoryUpdate._doc,
+        _id: productCategoryUpdate._doc._id.toString(),
+        name: productCategoryUpdate._doc.name,
+      };
+    } catch (error) {
       throw error;
     }
   },
