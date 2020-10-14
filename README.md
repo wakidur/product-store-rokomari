@@ -2,9 +2,11 @@
 
 Create a simple project of product store using Nodejs, Express.js and GraphQL with MVC pattern.
 
-### Query and Mutation
+## Query and Mutation
 
-## Product Category
+All Product and product category query and Mutation add
+
+#### Product Category
 
 ```bash
 # productCategories
