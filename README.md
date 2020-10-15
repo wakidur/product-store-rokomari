@@ -2,6 +2,33 @@
 
 Create a simple project of product store using Nodejs, Express.js and GraphQL with MVC pattern.
 
+## Usage
+
+Rename ".env.example" to ".env" and update the values/settings to your own
+
+## Install Dependencies
+
+```
+npm install
+
+or
+
+npm i
+```
+
+## Run App
+
+```
+# Run in dev mode
+npm run dev
+
+# Run in prod mode
+npm start
+
+# Run in nodemon
+nodemon
+```
+
 ## Query and Mutation
 
 All Product and product category query and Mutation add
