@@ -4,7 +4,8 @@
   "description": "Product Store with category and one-to-many operatin with product collection and cateroty table ",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "NODE_ENV=production node app",
+    "dev": "nodemon app"
   },
   "repository": {
     "type": "git",
